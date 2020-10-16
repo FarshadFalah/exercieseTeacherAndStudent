@@ -9,7 +9,7 @@ public  class Menu {
 
     public static String teachers(){
         return "(Teachers)\n"+
-                "1-Find Teacher"+
+                "1-Find Teacher\n"+
                 "2-Remove All Teachers???!!!\n"+
                 "3-Back\n";
     }
@@ -25,7 +25,7 @@ public  class Menu {
         return "("+name+")\n"+
                 "1-Show Student List\n"+
                 "2-Remove a Student\n"+
-                "3-back";
+                "3-back\n";
     }
 
     public static String student(String name){

@@ -20,8 +20,8 @@ public class MainMenuController {
 
     public static void mainMenu() {
         preLoad();
-        System.out.print(Menu.mainMenu());
         while (true) {
+            System.out.print(Menu.mainMenu());
             switch (CommandScannerWrapper.nextLineMenu()) {
                 case "1":
                     teachersMenu();
@@ -48,7 +48,7 @@ public class MainMenuController {
             while (scanner.hasNext()){
                 students.add(new Student(scanner.nextLine()));
             }
-            System.out.println("Students Added Successfully\n");
+            System.out.println("Students Added Successfully");
         } catch (FileNotFoundException e) {
             System.err.println("File Not Find");
         }
@@ -94,11 +94,11 @@ public class MainMenuController {
     }
 
     private static void teachersMenu(){
-        System.out.println(Menu.teachers());
         while (true){
+            System.out.println(Menu.teachers());
             switch (CommandScannerWrapper.nextLineMenu()) {
                 case "1":
-                    System.out.println("Please Enter Teacher's name");
+                    System.out.print("Please Enter Teacher's name: ");
                     String t=CommandScannerWrapper.nextLine();
                     if(teachers.contains(new Teacher(t))) {
                         teacherMenu(t);
@@ -111,7 +111,7 @@ public class MainMenuController {
                     if(CommandScannerWrapper.nextLine().matches("Y")){
                         teachers.clear();
                         classroom.clear();
-                        System.err.println("TEACHERS REMOVED. ALL CLASSES ARE CANCELED. GOODBYE");
+                        System.err.println("TEACHERS REMOVED. ALL CLASSES ARE CANCELED. GOODBYE\n");
                         return;
                     }
                     System.out.println("Classes Saved for Now");
@@ -120,15 +120,14 @@ public class MainMenuController {
                     return;
                 default:
                     System.err.println("Wrong Value");
-
                     break;
             }
         }
     }
 
    private static void studentsMenu(){
-        System.out.println(Menu.students());
         while (true){
+            System.out.println(Menu.students());
             switch (CommandScannerWrapper.nextLineMenu()) {
                 case "1":
                     System.out.println("Please Enter Student's name");
@@ -160,15 +159,14 @@ public class MainMenuController {
 
 
     private static void studentMenu(String name){
-        System.out.println(Menu.student(name));
         while (true){
+            System.out.println(Menu.student(name));
             switch (CommandScannerWrapper.nextLineMenu()) {
                 case "1":
                     Student student=new Student(name);
                     System.out.println(classroom.get(student));
                     break;
                 case "2":
-
                     return;
                 default:
                     System.err.println("Wrong Value");
@@ -178,10 +176,9 @@ public class MainMenuController {
     }
 
     private static void teacherMenu(String name){
-        System.out.println(Menu.teacher(name));
         Teacher teacher=new Teacher(name);
-
         while (true){
+            System.out.println(Menu.teacher(name));
             switch (CommandScannerWrapper.nextLineMenu()) {
                 case "1":
                     System.out.println("Students Are: ");

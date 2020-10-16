@@ -9,7 +9,7 @@ public class CommandScannerWrapper {
         return scanner.nextLine();
     }
     public static String nextLineMenu(){
-        System.out.print("please Enter Your Choice");
+        System.out.print("please Enter Your Choice: ");
         return scanner.nextLine();
     }
 
