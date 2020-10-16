@@ -64,7 +64,7 @@ public class MainMenuController {
             System.err.println("File Not Find");
         }
 
-        System.out.println("Please Enter Classroom File: ");
+        System.out.print("Please Enter Classroom File: ");
         file=new File(CommandScannerWrapper.nextLine());
         try(Scanner scanner=new Scanner(file)) {
             while (scanner.hasNext()){
