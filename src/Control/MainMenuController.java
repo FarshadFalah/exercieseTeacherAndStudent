@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class MainMenuController {
-    static Map<Teacher,Student> classroom=new HashMap<>();
+    static Map<Student,Teacher> classroom=new HashMap<>();
     static ArrayList<Teacher> teachers=new ArrayList<>();
     static ArrayList<Student> students=new ArrayList<>();
 
@@ -51,8 +51,6 @@ public class MainMenuController {
             System.out.println("Students Added Successfully\n");
         } catch (FileNotFoundException e) {
             System.err.println("File Not Find");
-        } finally {
-            file=null;
         }
 
         System.out.print("Please Enter File Name for Teachers List: ");
@@ -64,8 +62,6 @@ public class MainMenuController {
             System.out.println("Teachers Added Successfully");
         } catch (FileNotFoundException e) {
             System.err.println("File Not Find");
-        }finally {
-            file=null;
         }
 
         System.out.println("Please Enter Classroom File: ");
@@ -78,7 +74,7 @@ public class MainMenuController {
                     Teacher teacher=new Teacher(s[1]);
                     if (!students.contains(student)) throw new StudentNotFound();
                     if (!teachers.contains(teacher)) throw new TeacherNotFound();
-                    classroom.put(teacher,student);
+                    classroom.put(student,teacher);
 
                 } catch (StudentNotFound e) {
                     System.err.println("Student Do not Exist");
@@ -91,8 +87,6 @@ public class MainMenuController {
             System.out.println("Classrooms Created Successfully");
         } catch (FileNotFoundException e) {
             System.err.println("File Not Find");
-        }finally {
-            file=null;
         }
 
 
@@ -171,16 +165,7 @@ public class MainMenuController {
             switch (CommandScannerWrapper.nextLineMenu()) {
                 case "1":
                     Student student=new Student(name);
-                    if(classroom.containsValue(student)){
-                        for (Map.Entry<Teacher, Student> entry : classroom.entrySet()) {
-                            Teacher k = entry.getKey();
-                            Student v = entry.getValue();
-                            if (v.equals(student)) {
-                                System.out.println(k);
-                                break;
-                            }
-                        }
-                    }
+                    System.out.println(classroom.get(student));
                     break;
                 case "2":
 
@@ -201,17 +186,17 @@ public class MainMenuController {
                 case "1":
                     System.out.println("Students Are: ");
                     classroom.forEach((k,v)->{
-                        if(k.equals(teacher)){
-                            System.out.print(v+", ");
+                        if(v.equals(teacher)){
+                            System.out.print(k+", ");
                         }
                     });
                     break;
                 case "2":
                     System.out.print("Please Enter Student name: ");
                     Student student=new Student(CommandScannerWrapper.nextLine());
-                    if (classroom.containsValue(student)) {
-                        classroom.remove(teacher,student);
-                    }
+                    if (classroom.containsKey(student)) {
+                        classroom.remove(student);
+                    }else
                     break;
                 case "3":
                     return;
