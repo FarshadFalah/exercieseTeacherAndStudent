@@ -10,7 +10,12 @@ second file can have 400 Teacher.<br>
 in Third file we give a list that Shows which Student is connected with which Teacher.<br>
 in the result we want to type a Student name and get the Teacher or<br>
 type the Teacher name and get the Student list.
-</p><br><br>
+</p>
+<hr>
+<h3>Secound Part</h3>
+<p>Add a boolean field passed in Student and Randomly and with Stream lambda return all Passed Students</p>
+
+
 
 <p><a href="https://app.creately.com/diagram/XdMEePx73vs">UML Class Diagram</a></p>
 
