@@ -1,7 +1,7 @@
-package Control;
+package controller;
 
-import Control.exceptions.StudentNotFoundException;
-import Control.exceptions.TeacherNotFoundException;
+import controller.exceptions.StudentNotFoundException;
+import controller.exceptions.TeacherNotFoundException;
 import model.Person.Student;
 import model.Person.Teacher;
 import view.Menu;
