@@ -1,28 +1,46 @@
 package Control;
 
-import Control.exceptions.StudentNotFound;
-import Control.exceptions.TeacherNotFound;
-import model.Student;
-import model.Teacher;
+import Control.exceptions.StudentNotFoundException;
+import Control.exceptions.TeacherNotFoundException;
+import model.Person.Student;
+import model.Person.Teacher;
 import view.Menu;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 public class MainMenuController {
-    static Map<Student,Teacher> classroom=new HashMap<>();
-    static ArrayList<Teacher> teachers=new ArrayList<>();
-    static ArrayList<Student> students=new ArrayList<>();
+    private static MainMenuController mainMenu = null;
+    ArrayList<Teacher> teachers;
+    ArrayList<Student> students;
+    Scanner commandScanner;
 
-    public static void mainMenu() {
+    private MainMenuController() {
+        teachers = new ArrayList<>();
+        students = new ArrayList<>();
+        commandScanner = new Scanner(System.in);
+    }
+
+    public static MainMenuController getInstance() {
+
+        if (mainMenu == null) {
+            mainMenu = new MainMenuController();
+        }
+        return mainMenu;
+    }
+
+    private String askChoice() {
+        System.out.print("Please Enter Your Choice: ");
+        return commandScanner.nextLine();
+    }
+
+    public void mainMenu() {
         preLoad();
         while (true) {
             System.out.print(Menu.mainMenu());
-            switch (CommandScannerWrapper.nextLineMenu()) {
+            switch (askChoice()) {
                 case "1":
                     teachersMenu();
                     break;
@@ -40,12 +58,12 @@ public class MainMenuController {
 
     }
 
-    private static void preLoad(){
+    private void preLoad() {
         System.out.println("**********Hello and Welcome To Student and Teacher Exercise*******");
         System.out.print("Please Enter File Name for Student List: ");
-        File file=new File(CommandScannerWrapper.nextLine());
-        try(Scanner scanner=new Scanner(file)) {
-            while (scanner.hasNext()){
+        File file = new File(commandScanner.nextLine());
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNext()) {
                 students.add(new Student(scanner.nextLine()));
             }
             System.out.println("Students Added Successfully");
@@ -54,9 +72,9 @@ public class MainMenuController {
         }
 
         System.out.print("Please Enter File Name for Teachers List: ");
-        file=new File(CommandScannerWrapper.nextLine());
-        try(Scanner scanner=new Scanner(file)) {
-            while (scanner.hasNext()){
+        file = new File(commandScanner.nextLine());
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNext()) {
                 teachers.add(new Teacher(scanner.nextLine()));
             }
             System.out.println("Teachers Added Successfully");
@@ -65,22 +83,26 @@ public class MainMenuController {
         }
 
         System.out.print("Please Enter Classroom File: ");
-        file=new File(CommandScannerWrapper.nextLine());
-        try(Scanner scanner=new Scanner(file)) {
-            while (scanner.hasNext()){
-                String[] s=scanner.nextLine().split(" ");
+        file = new File(commandScanner.nextLine());
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNext()) {
+                String[] s = scanner.nextLine().split(" ");
                 try {
-                    Student student=new Student(s[0]);
-                    Teacher teacher=new Teacher(s[1]);
-                    if (!students.contains(student)) throw new StudentNotFound();
-                    if (!teachers.contains(teacher)) throw new TeacherNotFound();
-                    classroom.put(student,teacher);
-
-                } catch (StudentNotFound e) {
+                    Student student = new Student(s[0]);
+                    Teacher teacher = new Teacher(s[1]);
+                    if (!students.contains(student)) throw new StudentNotFoundException();
+                    if (!teachers.contains(teacher)) throw new TeacherNotFoundException();
+                    students.remove(student);
+                    teachers.remove(teacher);
+                    student.setTeacher(teacher);
+                    teacher.addStudent(student);
+                    teachers.add(teacher);
+                    students.add(student);
+                } catch (StudentNotFoundException e) {
                     System.err.println("Student Do not Exist");
-                }catch (TeacherNotFound e){
+                } catch (TeacherNotFoundException e) {
                     System.err.println("Teacher Not Found");
-                }catch (ArrayIndexOutOfBoundsException e){
+                } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("Wrong Entry");
                 }
             }
@@ -89,28 +111,25 @@ public class MainMenuController {
             System.err.println("File Not Find");
         }
 
-
-
     }
 
-    private static void teachersMenu(){
-        while (true){
+    private void teachersMenu() {
+        while (true) {
             System.out.println(Menu.teachers());
-            switch (CommandScannerWrapper.nextLineMenu()) {
+            switch (askChoice()) {
                 case "1":
                     System.out.print("Please Enter Teacher's name: ");
-                    String t=CommandScannerWrapper.nextLine();
-                    if(teachers.contains(new Teacher(t))) {
+                    String t = commandScanner.nextLine();
+                    if (teachers.contains(new Teacher(t))) {
                         teacherMenu(t);
-                    }else {
+                    } else {
                         System.err.println("Teacher Not Found");
                     }
                     break;
                 case "2":
                     System.err.print("ARE YOU SURE????? (Y/N)");
-                    if(CommandScannerWrapper.nextLine().matches("Y")){
+                    if (commandScanner.nextLine().matches("Y")) {
                         teachers.clear();
-                        classroom.clear();
                         System.err.println("TEACHERS REMOVED. ALL CLASSES ARE CANCELED. GOODBYE\n");
                         return;
                     }
@@ -125,24 +144,23 @@ public class MainMenuController {
         }
     }
 
-   private static void studentsMenu(){
-        while (true){
+    private void studentsMenu() {
+        while (true) {
             System.out.println(Menu.students());
-            switch (CommandScannerWrapper.nextLineMenu()) {
+            switch (askChoice()) {
                 case "1":
                     System.out.println("Please Enter Student's name");
-                    String t=CommandScannerWrapper.nextLine();
-                    if(students.contains(new Student(t))) {
+                    String t = commandScanner.nextLine();
+                    if (students.contains(new Student(t))) {
                         studentMenu(t);
-                    }else {
+                    } else {
                         System.err.println("Student Not Found");
                     }
                     break;
                 case "2":
                     System.err.print("ARE YOU SURE????? (Y/N)");
-                    if(CommandScannerWrapper.nextLine().matches("Y")){
+                    if (commandScanner.nextLine().matches("Y")) {
                         students.clear();
-                        classroom.clear();
                         System.err.println("STUDENTS REMOVED. ALL CLASSES ARE CANCELED. GOODBYE");
                         return;
                     }
@@ -158,13 +176,20 @@ public class MainMenuController {
     }
 
 
-    private static void studentMenu(String name){
-        while (true){
+    private void studentMenu(String name) {
+        while (true) {
             System.out.println(Menu.student(name));
-            switch (CommandScannerWrapper.nextLineMenu()) {
+            switch (askChoice()) {
                 case "1":
-                    Student student=new Student(name);
-                    System.out.println(classroom.get(student));
+                    Student student = new Student(name);
+                    int size = students.size();
+                    for (int i = 0; i < size; i++) {
+                        Student student1 = students.get(i);
+                        if (student1.equals(student)) {
+                            System.out.println(student1.getTeacher());
+                            break;
+                        }
+                    }
                     break;
                 case "2":
                     return;
@@ -175,25 +200,37 @@ public class MainMenuController {
         }
     }
 
-    private static void teacherMenu(String name){
-        Teacher teacher=new Teacher(name);
-        while (true){
+    private void teacherMenu(String name) {
+        Teacher teacher = new Teacher(name);
+        for (int i = 0; i < teachers.size(); i++) {
+            if (teachers.get(i).equals(teacher)) {
+                teacher = teachers.get(i);
+                break;
+            }
+        }
+        while (true) {
             System.out.println(Menu.teacher(name));
-            switch (CommandScannerWrapper.nextLineMenu()) {
+            switch (askChoice()) {
                 case "1":
                     System.out.println("Students Are: ");
-                    classroom.forEach((k,v)->{
-                        if(v.equals(teacher)){
-                            System.out.print(k+", ");
-                        }
-                    });
+                    teacher.getStudents().forEach(System.out::println);
                     break;
                 case "2":
                     System.out.print("Please Enter Student name: ");
-                    Student student=new Student(CommandScannerWrapper.nextLine());
-                    if (classroom.containsKey(student)) {
-                        classroom.remove(student);
-                    }else
+                    String nameStudent = commandScanner.nextLine();
+                    Student student = new Student(nameStudent);
+                    if (teacher.removeStudent(student)) {
+                        for (int i = 0; i < students.size(); i++) {
+                            Student student1 = students.get(i);
+                            if (student1.equals(student)) {
+                                student1.removeTeacher(teacher);
+                                break;
+                            }
+                        }
+                        System.out.println(nameStudent + " is Removed");
+                    } else {
+                        System.out.println(nameStudent + " is not Exist");
+                    }
                     break;
                 case "3":
                     return;

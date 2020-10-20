@@ -1,9 +1,9 @@
-package model;
+package model.Person;
 
 import java.util.Objects;
 
-class Person{
-    private String name;
+class Person {
+    private final String name;
 
     public Person(String name) {
         this.name = name;
