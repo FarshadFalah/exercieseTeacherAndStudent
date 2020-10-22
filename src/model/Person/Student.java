@@ -2,8 +2,8 @@ package model.Person;
 
 public class Student extends Person {
 
-    Teacher teacher;
-    boolean passed;
+    private Teacher teacher;
+    private boolean passed;
 
     public Student(String name) {
         super(name);
@@ -20,5 +20,9 @@ public class Student extends Person {
 
     public void removeTeacher(Teacher teacher){
         this.teacher=null;
+    }
+
+    public boolean isPassed() {
+        return passed;
     }
 }

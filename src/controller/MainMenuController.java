@@ -13,14 +13,16 @@ import java.util.Scanner;
 
 public class MainMenuController {
     private static MainMenuController mainMenu = null;
-    ArrayList<Teacher> teachers;
-    ArrayList<Student> students;
-    Scanner commandScanner;
+    private final ArrayList<Teacher> teachers;
+    private final ArrayList<Student> students;
+    private final Scanner commandScanner;
+    private Menu menu;
 
     private MainMenuController() {
         teachers = new ArrayList<>();
         students = new ArrayList<>();
         commandScanner = new Scanner(System.in);
+        menu=new Menu();
     }
 
     public static MainMenuController getInstance() {
@@ -39,7 +41,7 @@ public class MainMenuController {
     public void mainMenu() {
         preLoad();
         while (true) {
-            System.out.print(Menu.mainMenu());
+            System.out.print(menu.mainMenu());
             switch (askChoice()) {
                 case "1":
                     teachersMenu();
@@ -115,7 +117,7 @@ public class MainMenuController {
 
     private void teachersMenu() {
         while (true) {
-            System.out.println(Menu.teachers());
+            System.out.println(menu.teachers());
             switch (askChoice()) {
                 case "1":
                     System.out.print("Please Enter Teacher's name: ");
@@ -146,7 +148,7 @@ public class MainMenuController {
 
     private void studentsMenu() {
         while (true) {
-            System.out.println(Menu.students());
+            System.out.println(menu.students());
             switch (askChoice()) {
                 case "1":
                     System.out.println("Please Enter Student's name");
@@ -158,6 +160,14 @@ public class MainMenuController {
                     }
                     break;
                 case "2":
+                    System.out.println();
+                    students.forEach(student -> {
+                        if(student.isPassed()){
+                            System.out.println(student);
+                        }
+                    });
+                    break;
+                case "3":
                     System.err.print("ARE YOU SURE????? (Y/N)");
                     if (commandScanner.nextLine().matches("Y")) {
                         students.clear();
@@ -166,7 +176,7 @@ public class MainMenuController {
                     }
                     System.out.println("Classes Saved for Now");
                     break;
-                case "3":
+                case "4":
                     return;
                 default:
                     System.err.println("Wrong Value");
@@ -177,21 +187,25 @@ public class MainMenuController {
 
 
     private void studentMenu(String name) {
+        Student student = new Student(name);
+        int size = students.size();
+        for (int i = 0; i < size; i++) {
+            Student student1 = students.get(i);
+            if (student1.equals(student)) {
+                student=student1;
+                break;
+            }
+        }
         while (true) {
-            System.out.println(Menu.student(name));
+            System.out.println(menu.student(name));
             switch (askChoice()) {
                 case "1":
-                    Student student = new Student(name);
-                    int size = students.size();
-                    for (int i = 0; i < size; i++) {
-                        Student student1 = students.get(i);
-                        if (student1.equals(student)) {
-                            System.out.println(student1.getTeacher());
-                            break;
-                        }
-                    }
+                    System.out.println("Teachers name is: "+ student.getTeacher());
                     break;
                 case "2":
+                    System.out.println(name + (student.isPassed()?"is Passed":"is NOT Passed"));
+                    break;
+                case "3":
                     return;
                 default:
                     System.err.println("Wrong Value");
@@ -209,13 +223,21 @@ public class MainMenuController {
             }
         }
         while (true) {
-            System.out.println(Menu.teacher(name));
+            System.out.println(menu.teacher(name));
             switch (askChoice()) {
                 case "1":
                     System.out.println("Students Are: ");
                     teacher.getStudents().forEach(System.out::println);
                     break;
                 case "2":
+                    System.out.println("Passed Students are: ");
+                    teacher.getStudents().forEach(student -> {
+                        if(student.isPassed()){
+                            System.out.println(student);
+                        }
+                    });
+                    break;
+                case "3":
                     System.out.print("Please Enter Student name: ");
                     String nameStudent = commandScanner.nextLine();
                     Student student = new Student(nameStudent);
@@ -232,7 +254,7 @@ public class MainMenuController {
                         System.out.println(nameStudent + " is not Exist");
                     }
                     break;
-                case "3":
+                case "4":
                     return;
                 default:
                     System.err.println("Wrong Value");
